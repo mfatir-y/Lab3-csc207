@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class LanguageCodeConverter {
 
     // TODO Task: pick appropriate instance variables to store the data necessary for this class
+    private final Map<String, String> codeToLanguage = new HashMap<>();
 
     /**
      * Default constructor which will load the language codes from "language-codes.txt"
@@ -36,7 +38,11 @@ public class LanguageCodeConverter {
 
             // TODO Task: use lines to populate the instance variable
             //           tip: you might find it convenient to create an iterator using lines.iterator()
-
+            lines.remove(0);
+            for (String line : lines) {
+                String[] parts = line.split("\t");
+                codeToLanguage.put(parts[0], parts[1]);
+            }
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
@@ -71,5 +77,9 @@ public class LanguageCodeConverter {
     public int getNumLanguages() {
         // TODO Task: update this code to use your instance variable to return the correct value
         return 0;
+    }
+
+    public static void main(String[] args) {
+        LanguageCodeConverter converter = new LanguageCodeConverter();
     }
 }
