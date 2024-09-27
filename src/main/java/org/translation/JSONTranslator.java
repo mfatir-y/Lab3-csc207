@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
+import org.w3c.dom.ls.LSException;
 
 /**
  * An implementation of the Translator interface which reads in the translation
@@ -18,8 +19,7 @@ import org.json.JSONArray;
 public class JSONTranslator implements Translator {
 
     // TODO Task: pick appropriate instance variables for this class
-    private final Map<String, ArrayList<String>> countryMap = new HashMap<>();
-
+    private final Map<String, Map<String, String>> countryMap = new HashMap<>();
 
     /**
      * Constructs a JSONTranslator using data from the sample.json resources file.
@@ -41,15 +41,14 @@ public class JSONTranslator implements Translator {
             // TODO Task: use the data in the jsonArray to populate your instance variables
             //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
             for (int i = 0; i < jsonArray.length(); i++) {
-                String alpha3 = jsonArray.getJSONObject(i).getString("alpha3");
-                ArrayList<String> translations = new ArrayList<>();
+                Map<String, String> countryTranslations = new HashMap<>();
 
                 for (String keyCode : jsonArray.getJSONObject(i).keySet()) {
                     if (!keyCode.equals("id") && !keyCode.equals("alpha2") && !keyCode.equals("alpha3")) {
-                        translations.add(keyCode);
+                        countryTranslations.put(keyCode, jsonArray.getJSONObject(i).getString(keyCode));
                     }
                 }
-                countryMap.put(alpha3, translations);
+                countryMap.put(jsonArray.getJSONObject(i).getString("alpha3"), countryTranslations);
             }
         }
         catch (IOException | URISyntaxException ex) {
@@ -61,14 +60,15 @@ public class JSONTranslator implements Translator {
     public List<String> getCountryLanguages(String country) {
         // TODO Task: return an appropriate list of language codes,
         //            but make sure there is no aliasing to a mutable object
-        return new ArrayList<>();
+        Map<String, String> translations = countryMap.get(country);
+        return new ArrayList<>(translations.keySet());
     }
 
     @Override
     public List<String> getCountries() {
         // TODO Task: return an appropriate list of country codes,
         //            but make sure there is no aliasing to a mutable object
-        return new ArrayList<>();
+        return new ArrayList<>(countryMap.keySet());
     }
 
     @Override
@@ -79,5 +79,7 @@ public class JSONTranslator implements Translator {
 
     public static void main(String[] args) {
         JSONTranslator translator = new JSONTranslator();
+        System.out.println(translator.getCountryLanguages("pak"));
+        System.out.println(translator.getCountries());
     }
 }
