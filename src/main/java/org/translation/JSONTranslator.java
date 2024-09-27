@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
-import org.w3c.dom.ls.LSException;
 
 /**
  * An implementation of the Translator interface which reads in the translation
@@ -18,7 +17,6 @@ import org.w3c.dom.ls.LSException;
  */
 public class JSONTranslator implements Translator {
 
-    // TODO Task: pick appropriate instance variables for this class
     private final Map<String, Map<String, String>> countryMap = new HashMap<>();
 
     /**
@@ -38,11 +36,9 @@ public class JSONTranslator implements Translator {
         try {
             String jsonString = Files.readString(Paths.get(getClass().getClassLoader().getResource(filename).toURI()));
             JSONArray jsonArray = new JSONArray(jsonString);
-            // TODO Task: use the data in the jsonArray to populate your instance variables
-            //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 Map<String, String> countryTranslations = new HashMap<>();
-
                 for (String keyCode : jsonArray.getJSONObject(i).keySet()) {
                     if (!keyCode.equals("id") && !keyCode.equals("alpha2") && !keyCode.equals("alpha3")) {
                         countryTranslations.put(keyCode, jsonArray.getJSONObject(i).getString(keyCode));
@@ -58,28 +54,21 @@ public class JSONTranslator implements Translator {
 
     @Override
     public List<String> getCountryLanguages(String country) {
-        // TODO Task: return an appropriate list of language codes,
-        //            but make sure there is no aliasing to a mutable object
         Map<String, String> translations = countryMap.get(country);
         return new ArrayList<>(translations.keySet());
     }
 
     @Override
     public List<String> getCountries() {
-        // TODO Task: return an appropriate list of country codes,
-        //            but make sure there is no aliasing to a mutable object
         return new ArrayList<>(countryMap.keySet());
     }
 
     @Override
     public String translate(String country, String language) {
-        // TODO Task: complete this method using your instance variables as needed
+        Map<String, String> translations = countryMap.get(country);
+        if (translations.containsKey(language)) {
+            return translations.get(language);
+        }
         return null;
-    }
-
-    public static void main(String[] args) {
-        JSONTranslator translator = new JSONTranslator();
-        System.out.println(translator.getCountryLanguages("pak"));
-        System.out.println(translator.getCountries());
     }
 }
