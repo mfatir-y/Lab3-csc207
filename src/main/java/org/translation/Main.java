@@ -43,22 +43,17 @@ public class Main {
             if (country.equals(quit)) {
                 break;
             }
-            // TODO Task: Once you switch promptForCountry so that it returns the country
-            //            name rather than the 3-letter country code, you will need to
-            //            convert it back to its 3-letter country code when calling promptForLanguage
             CountryCodeConverter countryCodeConverter = new CountryCodeConverter();
-            country = countryCodeConverter.fromCountry(country);
+            String countryCode = countryCodeConverter.fromCountry(country);
 
-            String language = promptForLanguage(translator, country);
+            String language = promptForLanguage(translator, countryCode);
             if (language.equals(quit)) {
                 break;
             }
-            // TODO Task: Once you switch promptForLanguage so that it returns the language
-            //            name rather than the 2-letter language code, you will need to
-            //            convert it back to its 2-letter language code when calling translate.
-            //            Note: you should use the actual names in the message printed below though,
-            //            since the user will see the displayed message.
-            System.out.println(country + " in " + language + " is " + translator.translate(country, language));
+            LanguageCodeConverter languageCodeConverter = new LanguageCodeConverter();
+            String languageCode = languageCodeConverter.fromLanguage(language);
+
+            System.out.println(country + " in " + language + " is " + translator.translate(countryCode, languageCode));
             System.out.println("Press enter to continue or quit to exit.");
             Scanner s = new Scanner(System.in);
             String textTyped = s.nextLine();
